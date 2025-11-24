@@ -23,12 +23,11 @@ class _RegisterPageState extends State<RegisterPage> {
     String email = emailController.text.trim();
     String phone = phoneController.text.trim();
     String password1 = password1Controller.text.trim();
-    String password2 = password2Controller.text.trim();
 
 
-    if (name.isEmpty || email.isEmpty || phone.isEmpty || password1.isEmpty || password2.isEmpty) {
+    if (name.isEmpty || email.isEmpty || phone.isEmpty || password1.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Todos los campos son obligatorios")),
+        const SnackBar(content: Text("Fields cannot be empty")),
       );
       return;
     }
@@ -54,14 +53,6 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    if (password1 != password2) {
-      ScaffoldMessenger.of(context).showSnackBar(
-       const SnackBar(
-        content: Text('Password is not valid'))
-        );
-        return;
-    }
-
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text("Registro exitoso")));
@@ -72,27 +63,27 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFf3f4f6),
+      backgroundColor: Colors.black45,
       appBar: AppBar(
-        title: const Text("Registro", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-        backgroundColor: Colors.indigo,
+        title: const Text("Sign up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        backgroundColor: Colors.black45,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(30),
         child: Column(
           children: [
             CustomTextField(
-              label: "Nombre completo",
+              label: "Complete Name",
               controller: nameController,
               prefixIcon: Icon(Icons.person_2_outlined),
             ),
             CustomTextField(
-              label: "Correo institucional",
+              label: "Email",
               controller: emailController,
               prefixIcon: Icon(Icons.mail_outline_rounded),
             ),
             CustomTextField(
-              label: "Teléfono",
+              label: "Number",
               controller: phoneController,
               keyboardType: TextInputType.phone,
               prefixIcon: Icon(Icons.phone),
@@ -102,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: !showPassword,
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.lock_outline),
-                  labelText: "Contraseña (número de cuenta)",
+                  labelText: "Password",
                   suffixIcon: IconButton(
                     icon: Icon(
                       showPassword ? Icons.visibility : Icons.visibility_off,
@@ -111,35 +102,17 @@ class _RegisterPageState extends State<RegisterPage> {
                         setState(() => showPassword = !showPassword),
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(40),
                   ),
                 ),
               ),
               
-              TextField(
-                controller: password2Controller,
-                obscureText: !showPassword,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock_outline),
-                  labelText: "Confirmar Contraseña",
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      showPassword ? Icons.visibility : Icons.visibility_off,
-                    ),
-                    onPressed: () =>
-                        setState(() => showPassword = !showPassword),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
             ElevatedButton(
               onPressed: _register,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.indigo,
+                backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 80,
                   vertical: 15,
@@ -148,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text("Registrar", style: TextStyle(fontSize: 18, color: Colors.white)),
+              child: const Text("Sign up", style: TextStyle(fontSize: 18, color: Colors.black)),
             ),
           ],
         ),

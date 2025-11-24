@@ -130,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                context.goNamed("forgot");
+                context.pushNamed("forgot");
               },
               child: Text(
                 "Forgot password?",
