@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "924470608982",
+    "project_id": "reto-lectura-app",
+    "storage_bucket": "reto-lectura-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924470608982:android:a1309f60db12c050e9e7f7",
+        "android_client_info": {
+          "package_name": "com.example.lectura_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANffOf7OC4-spg0jFz43WttNSScj71l0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
