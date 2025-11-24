@@ -45,7 +45,7 @@ class NavigationBarApp extends StatelessWidget {
           NavigationDestination(
             icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person),
-            label: 'Profil',
+            label: 'Profile',
           ),
         ],
       ),
