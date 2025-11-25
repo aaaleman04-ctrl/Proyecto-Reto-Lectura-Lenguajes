@@ -13,13 +13,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
+  // LOGIN CON GOOGLE
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return;
 
-      final GoogleSignInAuthentication googleAuth = 
+      final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-      
+
       if (context.mounted) {
         context.go('/home');
       }
@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
   }
-
+  // LOGIN POR EMAIL
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool showPassword = false;
@@ -63,7 +63,6 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    //vamos a suponer que la contra es esta, de mientras agregamos una base de datos
     if (password != "12345") {
       ScaffoldMessenger.of(
         context,
@@ -73,7 +72,6 @@ class _LoginPageState extends State<LoginPage> {
 
     context.goNamed("home");
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,28 +80,37 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(30),
         child: Column(
           children: [
-            SizedBox(height: 150),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(
+            const SizedBox(height: 150),
+            ElevatedButton.icon(
+              onPressed: () => _signInWithGoogle(context),
+              icon: const Icon(Icons.login, color: Colors.white),
+              label: const Text(
                 "Log in with Google",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                backgroundColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
             ),
-            SizedBox(height: 15),
+
+            const SizedBox(height: 15),
+
             ElevatedButton(
               onPressed: () {},
-              child: Text(
+              child: const Text(
                 "Log in with Facebook",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 25),
+
+            const SizedBox(height: 25),
             Row(
               children: [
-                Expanded(
-                  child: Container(height: 1, color: const Color(0xFFE5E7EB)),
-                ),
+                Expanded(child: Container(height: 1, color: const Color(0xFFE5E7EB))),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
@@ -111,19 +118,21 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(color: Color(0xFF6B7280), fontSize: 12),
                   ),
                 ),
-                Expanded(
-                  child: Container(height: 1, color: const Color(0xFFE5E7EB)),
-                ),
+                Expanded(child: Container(height: 1, color: const Color(0xFFE5E7EB))),
               ],
             ),
-            SizedBox(height: 25),
+
+            const SizedBox(height: 25),
+
             CustomTextField(
               label: "Email or username",
               controller: emailController,
               isPassword: false,
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 30),
+
+            const SizedBox(height: 30),
+
             TextField(
               controller: passwordController,
               obscureText: !showPassword,
@@ -140,16 +149,18 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            SizedBox(height: 35),
+
+            const SizedBox(height: 35),
+
             ElevatedButton(
-              style: ButtonStyle(
+              style: const ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(Colors.white),
                 padding: WidgetStatePropertyAll(
                   EdgeInsets.symmetric(horizontal: 80, vertical: 15),
                 ),
               ),
               onPressed: _login,
-              child: Text(
+              child: const Text(
                 "Log in",
                 style: TextStyle(
                   color: Colors.black,
@@ -157,12 +168,14 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+
+            const SizedBox(height: 10),
+
             TextButton(
               onPressed: () {
                 context.pushNamed("forgot");
               },
-              child: Text(
+              child: const Text(
                 "Forgot password?",
                 style: TextStyle(
                   color: Colors.white,
@@ -170,12 +183,14 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            SizedBox(height: 100),
+
+            const SizedBox(height: 100),
+
             TextButton(
               onPressed: () {
                 context.pushNamed("register");
               },
-              child: Text(
+              child: const Text(
                 "Don't have an account? Sign up",
                 style: TextStyle(
                   color: Colors.white,
