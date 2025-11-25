@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lectura_app/views/book_detail_view.dart';
-import 'package:lectura_app/views/home_page.dart';
-import 'package:lectura_app/views/profile_page.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/home',

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -35,7 +36,10 @@ class _AddBookDialogState extends State<AddBookDialog> {
     });
 
     try {
-      String userId = 'YOUR_USER_ID'; // Reemplazar con el userId real
+      final user = FirebaseAuth.instance.currentUser;
+if (user == null) return;
+
+String userId = user.uid;
       
       // Verificar que no tenga más de 12 libros
       final booksSnapshot = await _firestore

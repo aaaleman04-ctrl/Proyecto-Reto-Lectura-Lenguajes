@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lectura_app/widgets/login_register/custom_text_field.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -16,48 +18,83 @@ class _RegisterPageState extends State<RegisterPage> {
   final password1Controller = TextEditingController();
   final password2Controller = TextEditingController();
   bool showPassword = false;
+  bool isLoading = false;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void _register() {
-    String name = nameController.text.trim();
-    String email = emailController.text.trim();
-    String phone = phoneController.text.trim();
-    String password1 = password1Controller.text.trim();
+  Future<void> _register() async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final phone = phoneController.text.trim();
+    final pass1 = password1Controller.text.trim();
+    final pass2 = password2Controller.text.trim();
 
-
-    if (name.isEmpty || email.isEmpty || phone.isEmpty || password1.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Fields cannot be empty")),
-      );
+    // ---- VALIDACIONES ----
+    if (name.isEmpty || email.isEmpty || phone.isEmpty || pass1.isEmpty) {
+      _showError("Fields cannot be empty");
       return;
     }
 
     if (!email.endsWith("@unah.hn")) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Email is not valid"),
-        ),
-      );
+      _showError("Email must end with @unah.hn");
       return;
     }
 
-    if ((password1.length < 6 ||
-        !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password1))) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Contraseña debe tener 6 caracteres y 1 símbolo especial",
-          ),
-        ),
-      );
+    if (pass1 != pass2) {
+      _showError("Passwords do not match");
       return;
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text("Registro exitoso")));
+    if (pass1.length < 6 ||
+        !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(pass1)) {
+      _showError("Password must have 6+ characters and 1 symbol");
+      return;
+    }
 
-    context.pop();
+    setState(() => isLoading = true);
+
+    try {
+      // ---- CREAR USUARIO EN FIREBASE ----
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: pass1,
+      );
+
+      final uid = userCredential.user!.uid;
+
+      // ---- GUARDAR DATOS EN FIRESTORE ----
+      await _firestore.collection("users").doc(uid).set({
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "created_at": FieldValue.serverTimestamp(),
+      });
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Registro exitoso")),
+      );
+
+      context.pop(); // regresar a login
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      _showError(e.message ?? "Error en el registro");
+    } catch (e) {
+      if (!mounted) return;
+      _showError("Unexpected error: $e");
+    }
+
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
+  }
+
+  void _showError(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg)),
+    );
   }
 
   @override
@@ -65,7 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       backgroundColor: Colors.black45,
       appBar: AppBar(
-        title: const Text("Sign up", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: const Text("Sign up", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black45,
       ),
       body: SingleChildScrollView(
@@ -75,42 +112,58 @@ class _RegisterPageState extends State<RegisterPage> {
             CustomTextField(
               label: "Complete Name",
               controller: nameController,
-              prefixIcon: Icon(Icons.person_2_outlined),
+              prefixIcon: const Icon(Icons.person_2_outlined),
             ),
             CustomTextField(
               label: "Email",
               controller: emailController,
-              prefixIcon: Icon(Icons.mail_outline_rounded),
+              prefixIcon: const Icon(Icons.mail_outline_rounded),
             ),
             CustomTextField(
               label: "Number",
               controller: phoneController,
               keyboardType: TextInputType.phone,
-              prefixIcon: Icon(Icons.phone),
+              prefixIcon: const Icon(Icons.phone),
             ),
+
+            // PASSWORD FIELD
             TextField(
-                controller: password1Controller,
-                obscureText: !showPassword,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock_outline),
-                  labelText: "Password",
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      showPassword ? Icons.visibility : Icons.visibility_off,
-                    ),
-                    onPressed: () =>
-                        setState(() => showPassword = !showPassword),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(40),
-                  ),
+              controller: password1Controller,
+              obscureText: !showPassword,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.lock_outline),
+                labelText: "Password",
+                suffixIcon: IconButton(
+                  icon: Icon(showPassword 
+                      ? Icons.visibility 
+                      : Icons.visibility_off),
+                  onPressed: () => setState(() => showPassword = !showPassword),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(40),
                 ),
               ),
-              
+            ),
 
             const SizedBox(height: 25),
+
+            // CONFIRM PASSWORD
+            TextField(
+              controller: password2Controller,
+              obscureText: !showPassword,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.lock),
+                labelText: "Confirm password",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 25),
+
             ElevatedButton(
-              onPressed: _register,
+              onPressed: isLoading ? null : _register,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
@@ -121,7 +174,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text("Sign up", style: TextStyle(fontSize: 18, color: Colors.black)),
+              child: isLoading
+                  ? const CircularProgressIndicator(color: Colors.black)
+                  : const Text(
+                      "Sign up",
+                      style: TextStyle(fontSize: 18, color: Colors.black),
+                    ),
             ),
           ],
         ),

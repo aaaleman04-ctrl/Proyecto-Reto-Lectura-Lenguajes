@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// Importar tus archivos
-// import 'widgets/book_card.dart';
-// import 'dialogs/add_book_dialog.dart';
+import 'package:lectura_app/views/add_book_dialog.dart';
+import 'package:lectura_app/widgets/home_page/book_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,14 +23,12 @@ class _HomeScreenState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Reto de Lectura'),
         actions: [
-          // Botón para agregar libro
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
-              // Llamar al bottom sheet
               showAddBookDialog(context);
             },
-            tooltip: 'Agregar libro',
+            tooltip: 'Add new book',
           ),
         ],
       ),
@@ -200,204 +197,6 @@ class _HomeScreenState extends State<HomePage> {
                 );
               },
             ),
-    );
-  }
-}
-
-// Esta es la clase BookCard (deberías tenerla en un archivo separado)
-class BookCard extends StatelessWidget {
-  final String bookId;
-  final String title;
-  final String author;
-  final String? imageUrl;
-  final String status;
-  final int totalPages;
-  final int pagesRead;
-
-  const BookCard({
-    super.key,
-    required this.bookId,
-    required this.title,
-    required this.author,
-    this.imageUrl,
-    required this.status,
-    required this.totalPages,
-    required this.pagesRead,
-  });
-
-  Color _getStatusColor() {
-    switch (status) {
-      case 'Finalizado':
-        return Colors.green;
-      case 'En progreso':
-        return Colors.orange;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final progress = totalPages > 0 ? (pagesRead / totalPages) : 0.0;
-
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: () {
-          // Navegar a la pantalla de detalle
-          // context.push('/book-detail/$bookId');
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: SizedBox(
-          height: 180,
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
-                ),
-                child: Container(
-                  width: 120,
-                  color: Colors.grey[300],
-                  child: imageUrl != null && imageUrl!.isNotEmpty
-                      ? Image.network(
-                          imageUrl!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(
-                              Icons.book,
-                              size: 60,
-                              color: Colors.grey,
-                            );
-                          },
-                        )
-                      : const Icon(
-                          Icons.book,
-                          size: 60,
-                          color: Colors.grey,
-                        ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            author,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: _getStatusColor(),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              status,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: _getStatusColor(),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              LinearProgressIndicator(
-                                value: progress,
-                                backgroundColor: Colors.grey[300],
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  _getStatusColor(),
-                                ),
-                                minHeight: 6,
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '$pagesRead / $totalPages páginas (${(progress * 100).toStringAsFixed(0)}%)',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Función para mostrar el diálogo (deberías tenerla en add_book_dialog.dart)
-void showAddBookDialog(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) => const AddBookDialog(),
-  );
-}
-
-// Placeholder del AddBookDialog
-class AddBookDialog extends StatelessWidget {
-  const AddBookDialog({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-      ),
-      child: const Text('Formulario para agregar libro'),
     );
   }
 }

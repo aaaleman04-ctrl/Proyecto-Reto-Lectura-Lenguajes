@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -93,8 +94,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (shouldSignOut == true) {
       await _auth.signOut();
-      // Navegar a la pantalla de login
-      // context.go('/login');
+      
+      if (!mounted) return;
+
+       context.push('/login');
     }
   }
 
