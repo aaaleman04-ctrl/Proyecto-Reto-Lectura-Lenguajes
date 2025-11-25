@@ -12,7 +12,28 @@
           "package_name": "com.example.lectura_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "924470608982-d7d2ajoobbcucknotq52h13elpus80av.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lectura_app",
+            "certificate_hash": "2cafa61303099d4af2b9a5a1710a65e7a5cb3567"
+          }
+        },
+        {
+          "client_id": "924470608982-tqt40aboqn349mo3rouk863a35feipua.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lectura_app",
+            "certificate_hash": "a8356be39f83e7d2d29bc0c4d7087158d8bed805"
+          }
+        },
+        {
+          "client_id": "924470608982-timqklbg87v40evtiig0oduqt3d06uaq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyANffOf7OC4-spg0jFz43WttNSScj71l0c"
@@ -20,7 +41,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924470608982-timqklbg87v40evtiig0oduqt3d06uaq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
