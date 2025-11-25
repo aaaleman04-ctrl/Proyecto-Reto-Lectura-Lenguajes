@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
                 builder: (context, state) => ForgotPassword(),
               ),
               GoRoute(
-                path: "/register",
+                path: "register",
                 name: "register",
                 builder: (context, state) => RegisterPage(),
               ),
